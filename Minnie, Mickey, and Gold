@@ -1,0 +1,187 @@
+//// Dymon Harris CST
+//////// What am I trying to do???
+//////// Dymon Harris  (CST 112; today's date?)
+
+//// GLOBALS:  coordinates, speed, etc.
+float horizon;
+float goldX, goldY;       // Position.
+float goldDX, goldDY;     // Speed.
+float minnieX, minnieY;
+float mickeyX, mickeyY;
+
+//// SETUP:  window size, initialization (start in middle of screen).
+void setup() {
+ size(600,600);
+  horizon=  height-325;
+  goldX=  width/2;
+  goldY=  height/2;
+  goldDX=  3;
+  goldDY=  2;
+  mickeyX= 100;
+  mickeyY= 100;
+  minnieX= 150;
+  minnieY= 150;
+}
+
+//// NEXT FRAME:  scene, action, show.
+void draw() {
+  scene();
+  gold();
+  mickey();
+  minnie();
+  messages();
+} 
+
+
+//// SCENE: sky, sun, tree, house, etc.
+
+void scene() {
+background(255);
+
+fill(0,200,200);     // Color Of Sky
+rectMode(CENTER);
+rect(0,0, 1200,500); // Shape Of Sky
+
+strokeWeight(0);
+fill(255,255,0);         // Color Of Sun 
+ellipse( frameCount%width, horizon-40-sin( (PI*frameCount/width) % PI )*horizon/2, 70, 70 );   // Shape of Sun
+strokeWeight(1);
+
+fill(117,0,0);            // Color Of House
+rectMode(CENTER);
+rect(300,200,  100,100);  // House Dimensions
+
+fill(117,0,0);                         // Color Of Roof
+triangle(300,90,  380,150,  220,150);  // Roof Dimensions
+
+fill(150);              // Color Of Door
+rectMode(CENTER);
+rect(300,225, 35,50);   // Shape Of Door
+
+fill(10);               // Color Of Door Knob
+ellipseMode(CENTER);
+ellipse(312,228, 6,6);  // Shape Of Door Knob
+
+//// Window
+for (int i = 200; i < 220; i++) {
+  float r = random(200);           // Flickering Window Effect
+  fill(r*4);
+rectMode(CENTER);
+rect(330,180, 35,35);       // Shape Of Window
+
+fill(0);  
+line(313,180, 347,180);
+line(330,163, 330,196);
+}
+
+fill(100,200,100);       // Color Of Grass
+rectMode(CENTER);
+rect(0,495,  1200,490);  // Shape Of Grass
+
+
+
+fill(127,70,0);         // Color Of Bark
+rectMode(CENTER);
+rect(130,200, 50,100);  // Shape Of Bark
+
+fill(100,200,100);        // Color Of Leaves
+ellipse(100,150, 60,60);  // Leaf 1
+ellipse(160,150, 60,60);  // Leaf 2
+ellipse(130,110, 60,60);  // Leaf 3
+
+fill(127,70,0);           // Color Of Bark
+rectMode(CENTER);  
+rect(460,200, 50,100);    // Bark Dimensions
+
+fill(100,200,100);        //Color Of Leaves
+ellipse(430,150, 60,60);  // Leaf 1
+ellipse(490,150, 60,60);  // Leaf 2
+ellipse(460,110, 60,60);  // Leaf 3
+}
+
+//// ACTION:  move(x,y) cooridinates of mickey & minnie; show them.
+
+// Move & Draw
+void gold() {
+if (key != 'p') {
+  goldX += goldDX;
+  goldY += goldDY;
+}
+// Bounce
+if (goldX < 0 || goldX > width) {
+  goldDX = -goldDX;
+}
+// Also force below horizon
+if (goldY < horizon ) {
+  goldY= horizon;          // Cannot go above horizon
+  goldDY= abs(goldDY);  // Force it downward
+}
+if (goldY < horizon  || goldY > height-30) {
+  goldDY = -goldDY;
+}
+// Show
+showGold( goldX, goldY );
+}
+
+void showGold( float x, float y){
+fill(250,250,0);
+rectMode(CENTER);
+rect(x,y,50,50);
+}
+
+// Minnie Chases Mickey
+void minnie() {
+  if (key != 'p') {
+    minnieX=  minnieX + (mickeyX - minnieX)/60;
+    minnieY=  minnieY + (mickeyY-minnieY)/80;
+  }
+  /* INSERT YOUR CODE HERE! */
+  showMinnie( minnieX, minnieY );
+}
+void showMinnie( float x, float y ){
+fill(20);                // Color Of Ears
+ellipse(x, y, 60, 60); // Body Shape
+ellipse(x-20, y-35, 30, 30); // Left Ear
+ellipse(x+20, y-35, 30, 30); // Right Ear
+fill(255,0,100);           // Color Of Bottoms
+arc(x, y, 60, 60, 0, PI+QUARTER_PI, CHORD);  // Shape Of Bottoms
+}  
+
+//// Mickey Chases Gold
+void mickey() {
+  if (key != 'p') {
+    mickeyX=  mickeyX + (goldX - mickeyX)/60;
+    mickeyY=  mickeyY + (goldY-mickeyY)/80;
+  }
+  /* INSERT YOUR CODE HERE! */
+  showMickey( mickeyX, mickeyY );
+}
+void showMickey(float x, float y) {
+fill(20);                // Color Of Ears
+ellipse(x, y, 60, 60); // Body Shape
+ellipse(x-20, y-35, 30, 30); // Left Ear
+ellipse(x+20, y-35, 30, 30); // Right Ear
+fill(255,0,0);           // Color Of Bottoms
+arc(x, y, 60, 60, 0, PI+QUARTER_PI, CHORD);  // Shape Of Bottoms
+}  
+
+////
+void messages() {
+fill(100);
+text("My name is Dymon Harris", 10,590);  /// My Name
+}
+
+//////// HANDLERS:  mouse clicks, keys
+void mousePressed() {
+  goldX=  mouseX;                             // Set (x,y) to mouse
+  goldY=  mouseY;
+  //
+  goldDX=  random( -6, +6 );                  // random speed.
+  goldDY=  random( -4, +4 );
+}
+
+void keyPressed() {
+  if (key == 'q') {
+    exit();                           // press 'q' key to QUIT.
+  }
+}
